@@ -1,69 +1,47 @@
-/* classes 101  */
+/* CSV Writer Class Mini Project */
 
-type Base = "classic" | "thick" | "thin" | "garlic";
+import { appendFileSync } from "fs";
 
-interface HasFormatter {
-  format(): string;
+interface Payment {
+  to: string;
+  id: number;
+  amount: number;
+  notes: string;
 }
 
-/* Inheritance && abstract class */
-abstract class MenuItem implements HasFormatter {
-  constructor(private title: string, private price: number) {}
+type PaymentColums = ("id" | "amount" | "to" | "notes")[];
 
-  get details(): string {
-    return `${this.title} - $${this.price}`;
+class CSVWriter {
+  constructor(private columns: PaymentColums) {
+    this.csv = this.columns.join("");
   }
 
-  format() {
-    return `This menu item is called ${this.title} and is $${this.price}`;
-  }
-}
+  private csv: string;
 
-class Pizza extends MenuItem {
-  constructor(title: string, price: number) {
-    //using the super to have the parameters from the menuItem
-    super(title, price);
+  save(filename: string): void {
+    appendFileSync(filename, this.csv);
+    this.csv = "\n";
+    console.log(`file saved as ${filename}`);
   }
 
-  private base: Base = "classic";
-  private toppings: string[] = [];
+  addRows(values: Payment[]): void {
+    let rows = values.map((v) => this.formateRow(v));
+    this.csv += rows.join("\n");
 
-  addTopping(topping: string): void {
-    this.toppings.push(topping);
+    console.log(this.csv);
   }
 
-  removeTopping(topping: string): void {
-    this.toppings = this.toppings.filter((t) => t !== topping);
-  }
-
-  selectBase(b: Base): void {
-    this.base = b;
+  private formateRow(p: Payment): string {
+    return this.columns.map((col) => p[col]).join(",");
   }
 }
 
-const pizzaOne = new Pizza("omar special", 27);
-console.log(pizzaOne);
+const writer = new CSVWriter(["id", "amount", "to", "notes"]);
 
-/* classes as Types */
-function addMushroomsToPizzas(pizzas: Pizza[]): void {
-  for (const p of pizzas) {
-    p.addTopping("mushrooms");
-  }
-}
+writer.addRows([
+  { id: 1, amount: 100, to: "Sarah", notes: "Lunch" },
+  { id: 2, amount: 200, to: "John", notes: "Dinner" },
+  { id: 3, amount: 300, to: "Jane", notes: "Breakfast" },
+]);
 
-/* addMushroomsToPizzas([pizzaOne]);
-console.log(pizzaOne); */
-
-function printMenuItem(item: MenuItem): void {
-  console.log(item.details);
-}
-
-console.log(pizzaOne.details);
-
-function printFormatted(val: HasFormatter): void {
-  console.log(val.format());
-}
-
-printFormatted(pizzaOne);
-
-/* abstract class */
+writer.save("./data/payments.csv");
