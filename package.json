@@ -1,22 +1,5 @@
 {
-  "name": "typoscripto",
-  "version": "1.0.0",
-  "description": "learning cool stuff in typescript",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Apasin-josc/typoScripto.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Apasin-josc/typoScripto/issues"
-  },
-  "homepage": "https://github.com/Apasin-josc/typoScripto#readme",
   "devDependencies": {
-    "@types/node": "^22.13.8"
+    "parcel": "^2.13.3"
   }
 }
